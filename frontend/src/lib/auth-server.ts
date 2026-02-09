@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { jwt } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
-import { Pool } from "pg";
+import { Pool } from "@neondatabase/serverless";
 
 export const auth = betterAuth({
   database: new Pool({
