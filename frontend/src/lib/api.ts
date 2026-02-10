@@ -70,6 +70,15 @@ export const api = {
     apiRequest<Task>(`/api/${userId}/tasks/${taskId}/complete`, {
       method: "PATCH",
     }),
+
+  sendMessage: (userId: string, message: string, conversationId?: number) =>
+    apiRequest<ChatResponse>(`/api/${userId}/chat`, {
+      method: "POST",
+      body: JSON.stringify({
+        message,
+        ...(conversationId != null && { conversation_id: conversationId }),
+      }),
+    }),
 };
 
 export interface Task {
@@ -97,4 +106,21 @@ export interface UpdateTaskData {
   completed?: boolean;
   priority?: string;
   tags?: string[];
+}
+
+export interface ToolCall {
+  tool: string;
+  input: Record<string, unknown>;
+  output: Record<string, unknown> | null;
+}
+
+export interface ChatResponse {
+  conversation_id: number;
+  response: string;
+  tool_calls: ToolCall[];
+}
+
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
 }
