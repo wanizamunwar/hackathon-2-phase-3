@@ -1,6 +1,6 @@
 import { authClient } from "./auth";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://hackathon-2-phase-2-production-0c5c.up.railway.app";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
 
 async function getAuthHeaders(): Promise<HeadersInit> {
   const headers: HeadersInit = {
@@ -23,14 +23,23 @@ async function apiRequest<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
+  if (!API_BASE) {
+    throw new Error("API URL not configured. Set NEXT_PUBLIC_API_URL.");
+  }
+
   const headers = await getAuthHeaders();
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers: {
-      ...headers,
-      ...options.headers,
-    },
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers: {
+        ...headers,
+        ...options.headers,
+      },
+    });
+  } catch {
+    throw new Error(`Cannot reach server at ${API_BASE}. Check NEXT_PUBLIC_API_URL and CORS settings.`);
+  }
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: "Request failed" }));

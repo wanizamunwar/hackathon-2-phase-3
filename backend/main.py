@@ -36,7 +36,7 @@ if frontend_url:
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_origin_regex=r"https://hackathon-2-phase-2.*\.vercel\.app",
+    allow_origin_regex=r"https://hackathon-2-phase-(2|3).*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
